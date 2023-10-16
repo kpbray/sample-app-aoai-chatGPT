@@ -133,7 +133,7 @@ def fetchUserGroups(userToken, nextLink=None):
 
 def generateFilterString(userToken):
     # Get list of groups user is a member of
-    userGroups = fetchUserGroups(userToken)
+    userGroups = (userToken)
 
     # Construct filter string
     if userGroups:
@@ -195,8 +195,12 @@ def prepare_body_headers_with_data(request):
         ]
     }
 
+    credential = DefaultAzureCredential()
+    token = credential.get_token("https://cognitiveservices.azure.com/.default")
+
     headers = {
         'Content-Type': 'application/json',
+        "Authorization": f"Bearer {token.token}",
         'api-key': AZURE_OPENAI_KEY,
         "x-ms-useragent": "GitHubSampleWebApp/PublicAPI/2.0.0"
     }
