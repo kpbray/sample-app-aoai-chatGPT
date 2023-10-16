@@ -133,7 +133,7 @@ def fetchUserGroups(userToken, nextLink=None):
 
 def generateFilterString(userToken):
     # Get list of groups user is a member of
-    userGroups = (userToken)
+    userGroups = fetchUserGroups(userToken)
 
     # Construct filter string
     if userGroups:
