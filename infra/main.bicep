@@ -71,9 +71,9 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAiResourceGroupName)) {
-  name: !empty(openAiResourceGroupName) ? openAiResourceGroupName : resourceGroup.name
-}
+//resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAiResourceGroupName)) {
+//  name: !empty(openAiResourceGroupName) ? openAiResourceGroupName : resourceGroup.name
+//}
 
 resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(searchServiceResourceGroupName)) {
   name: !empty(searchServiceResourceGroupName) ? searchServiceResourceGroupName : resourceGroup.name
@@ -144,38 +144,38 @@ module backend 'core/host/appservice.bicep' = {
 }
 
 
-module openAi 'core/ai/cognitiveservices.bicep' = {
-  name: 'openai'
-  scope: openAiResourceGroup
-  params: {
-    name: !empty(openAiResourceName) ? openAiResourceName : '${abbrs.cognitiveServicesAccounts}${resourceToken}'
-    location: openAiResourceGroupLocation
-    tags: tags
-    sku: {
-      name: !empty(openAiSkuName) ? openAiSkuName : 'S0'
-    }
-    deployments: [
-      {
-        name: openAIModel
-        model: {
-          format: 'OpenAI'
-          name: openAIModelName
-          version: '0613'
-        }
-        capacity: 30
-      }
-      {
-        name: embeddingDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: embeddingModelName
-          version: '2'
-        }
-        capacity: 30
-      }
-    ]
-  }
-}
+//module openAi 'core/ai/cognitiveservices.bicep' = {
+//  name: 'openai'
+//  scope: 
+//  params: {
+//    name: !empty(openAiResourceName) ? openAiResourceName : '${abbrs.cognitiveServicesAccounts}${resourceToken}'
+//    location: openAiResourceGroupLocation
+//    tags: tags
+//    sku: {
+//      name: !empty(openAiSkuName) ? openAiSkuName : 'S0'
+//    }
+//    deployments: [
+//      {
+//        name: openAIModel
+//        model: {
+//          format: 'OpenAI'
+//          name: openAIModelName
+//          version: '0613'
+//        }
+//        capacity: 30
+//      }
+//      {
+//        name: embeddingDeploymentName
+//        model: {
+//          format: 'OpenAI'
+//          name: embeddingModelName
+//          version: '2'
+//        }
+//        capacity: 30
+//      }
+//    ]
+//  }
+//}
 
 module searchService 'core/search/search-services.bicep' = {
   name: 'search-service'
@@ -210,15 +210,15 @@ module cosmos 'db.bicep' = {
 
 
 // USER ROLES
-module openAiRoleUser 'core/security/role.bicep' = {
-  scope: openAiResourceGroup
-  name: 'openai-role-user'
-  params: {
-    principalId: principalId
-    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-    principalType: 'User'
-  }
-}
+//module openAiRoleUser 'core/security/role.bicep' = {
+//  scope: openAiResourceGroup
+//  name: 'openai-role-user'
+//  params: {
+//    principalId: principalId
+//    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+//    principalType: 'User'
+//  }
+//}
 
 module searchRoleUser 'core/security/role.bicep' = {
   scope: searchServiceResourceGroup
@@ -251,15 +251,15 @@ module searchServiceContribRoleUser 'core/security/role.bicep' = {
 }
 
 // SYSTEM IDENTITIES
-module openAiRoleBackend 'core/security/role.bicep' = {
-  scope: openAiResourceGroup
-  name: 'openai-role-backend'
-  params: {
-    principalId: backend.outputs.identityPrincipalId
-    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-    principalType: 'ServicePrincipal'
-  }
-}
+//module openAiRoleBackend 'core/security/role.bicep' = {
+//  scope: openAiResourceGroup
+//  name: 'openai-role-backend'
+//  params: {
+//    principalId: backend.outputs.identityPrincipalId
+//    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+//    principalType: 'ServicePrincipal'
+//  }
+//}
 
 module searchRoleBackend 'core/security/role.bicep' = {
   scope: searchServiceResourceGroup
@@ -308,15 +308,15 @@ output AZURE_SEARCH_TITLE_COLUMN string = searchTitleColumn
 output AZURE_SEARCH_URL_COLUMN string = searchUrlColumn
 
 // openai
-output AZURE_OPENAI_RESOURCE string = openAi.outputs.name
-output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
-output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
+// output AZURE_OPENAI_RESOURCE string = openAi.outputs.name
+// output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
+// output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
 output AZURE_OPENAI_MODEL string = openAIModel
 output AZURE_OPENAI_MODEL_NAME string = openAIModelName
-output AZURE_OPENAI_SKU_NAME string = openAi.outputs.skuName
-output AZURE_OPENAI_KEY string = openAi.outputs.key
-output AZURE_OPENAI_EMBEDDING_KEY string = openAi.outputs.key
-output AZURE_OPENAI_EMBEDDING_ENDPOINT string = '${openAi.outputs.endpoint}/openai/deployments/${embeddingDeploymentName}/embeddings?api-version=2023-06-01-preview'
+// output AZURE_OPENAI_SKU_NAME string = openAi.outputs.skuName
+// output AZURE_OPENAI_KEY string = openAi.outputs.key
+// output AZURE_OPENAI_EMBEDDING_KEY string = openAi.outputs.key
+// output AZURE_OPENAI_EMBEDDING_ENDPOINT string = '${openAi.outputs.endpoint}/openai/deployments/${embeddingDeploymentName}/embeddings?api-version=2023-06-01-preview'
 output AZURE_OPENAI_TEMPERATURE int = openAITemperature
 output AZURE_OPENAI_TOP_P int = openAITopP
 output AZURE_OPENAI_MAX_TOKENS int = openAIMaxTokens
